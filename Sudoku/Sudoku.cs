@@ -14,12 +14,12 @@ namespace Sudoku
         // Create HttpClient - Instantiate as static so only 1 is created and used for the entire application.
         private static HttpClient client = new HttpClient();
 
-        private int[,] RawBoard;
-        private int[,] Solution;
-        private string Difficulty;
-        private string Status;
+        private int[,] _rawBoard;
+        private int[,] _solution;
+        private string _difficulty;
+        private string _status;
 
-        public enum difficulty
+        public enum Difficulty
         {
             random,
             easy,
@@ -27,43 +27,53 @@ namespace Sudoku
             hard
         }
 
-        public void GetBoard(difficulty difficulty)
+        public void GetBoard(Difficulty difficulty)
         {
+            // Make request for raw data.
             string url = "https://sugoku.herokuapp.com/board?difficulty=";
-            
-            var randResponse = client.GetStringAsync($"{url}{difficulty}");
-            var rawBoard = JsonConvert.DeserializeObject<Dictionary<string, int[,]>>(randResponse.Result);
-            RawBoard = rawBoard["board"];
+            var response = client.GetStringAsync($"{url}{difficulty}");
+
+            // Deserialize data and save results. 
+            var jsonSchema = new {
+                board = new int[9, 9]
+            };
+            var content = JsonConvert.DeserializeAnonymousType(response.Result, jsonSchema);
+            _rawBoard = content.board;
         }
 
         public void DisplayBoard()
         {
             Console.WriteLine("Board: ");
-            Print2dArray(RawBoard);
+            Print2dArray(_rawBoard);
         }
 
         public void GetSolution()
         {
             // Make post request with current board to get solution
             string url = "https://sugoku.herokuapp.com/solve";
-            var data = new Dictionary<string, string> { { "board", JsonConvert.SerializeObject(RawBoard) } };
-            var temp = new FormUrlEncodedContent(data);
-            var solvedResponse = client.PostAsync(url, temp);
+            var data = new Dictionary<string, string> { { "board", JsonConvert.SerializeObject(_rawBoard) } };
+            var encodedData = new FormUrlEncodedContent(data);
+            var content = client.PostAsync(url, encodedData).Result.Content.ReadAsStringAsync().Result;
 
-            // Parse request data into dynamic dictionary
-            var solvedContent = solvedResponse.Result.Content.ReadAsStringAsync();
-            var rawSolution = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(solvedContent.Result);
+            // Deserialize data and save results. 
+            var jsonSchema = new
+            {
+                difficulty = "",
+                status = "",
+                solution = new int[9, 9]
+            };
+            var rawSolution = JsonConvert.DeserializeAnonymousType(content, jsonSchema);
 
             // Save dictionary values to object values
-            Solution = rawSolution["solution"].ToObject<int[,]>();
-            Difficulty = rawSolution["difficulty"];
-            Status = rawSolution["status"];
+            _solution = rawSolution.solution;
+            _difficulty = rawSolution.difficulty;
+            _status = rawSolution.status;
         }
 
         public void DisplaySolution()
         {
             Console.WriteLine("Solution: ");
-            Print2dArray(Solution);
+            Print2dArray(_solution);
         }
 
         private void Print2dArray(int[,] array)

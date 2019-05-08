@@ -13,7 +13,7 @@ namespace Sudoku
         static void Main(string[] args)
         {
             Sudoku game = new Sudoku();
-            game.GetBoard(Sudoku.difficulty.random);
+            game.GetBoard(Sudoku.Difficulty.random);
             game.DisplayBoard();
             game.GetSolution();
             game.DisplaySolution();
