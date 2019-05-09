@@ -9,7 +9,7 @@ using System.Net.Http;
 
 namespace Sudoku
 {
-    class Sudoku
+    class SudokuBoard
     {
         // Create HttpClient - Instantiate as static so only 1 is created and used for the entire application.
         private static HttpClient client = new HttpClient();
@@ -18,6 +18,13 @@ namespace Sudoku
         private int[,] _solution;
         private string _difficulty;
         private string _status;
+        
+        // TODO: Add property to contain all cells
+        
+        // TODO: Add property to contain rows
+        // TODO: Add property to contain columns
+        // TODO: Add property to contain boxes
+        //     I may not do the 3 items above and may instead use peers inside the cell. 
 
         public enum Difficulty
         {
@@ -86,6 +93,27 @@ namespace Sudoku
                 }
                 Console.WriteLine();
             }
+        }
+
+        public bool BacktrackSolve()
+        {
+            // Method to run backtrack solve algorithm on the board.
+
+            // list = list of unsolved cells
+            // i = 0
+            // while (i > 0 && i < length of unsolved list):
+            //  if (list[i] can update guess && new guess creates a valid board) 
+            //    i++
+            //  else
+            //    reset current cell
+            //    i--
+            //
+            //  if (i = length of unsolved list) 
+            //    return true  // board is solved
+            //  else
+            //    return false  // board is unsolvable
+
+            return false;
         }
 
     }
