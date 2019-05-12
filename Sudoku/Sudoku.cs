@@ -5,7 +5,7 @@ using System.Net.Http;
 
 namespace Sudoku
 {
-    class SudokuBoard
+    public class SudokuBoard
     {
         // Create HttpClient - Instantiate as static so only 1 is created and used for the entire application.
         private static HttpClient client = new HttpClient();
