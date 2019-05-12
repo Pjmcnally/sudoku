@@ -1,13 +1,52 @@
-using System;
+﻿using System;
 
 namespace Sudoku
 {
     public class Cell
     {
-        public int Row { get; }
-        public int Col { get; }
-        public int Box { get; private set; }
-        public int Value { get; private set; }
+        private int _row;
+        public int Row {
+            get { return _row; }
+            private set
+            {
+                if (value < 0 || value > 8)
+                {
+                    throw new System.ArgumentException("Parameter must be integer 0 - 8", "Row");
+                }
+                _row = value;
+            }
+        }
+
+        private int _col;
+        public int Col
+        {
+            get { return _col; }
+            private set
+            {
+                if (value < 0 || value > 8)
+                {
+                    throw new System.ArgumentException("Parameter must be integer 0 - 8", "Col");
+                }
+                _col = value;
+            }
+        }
+
+        private int _value;
+        public int Value
+        {
+            get { return _value; }
+            private set
+            {
+                if (value < 0 || value > 9)
+                {
+                    throw new System.ArgumentException("Parameter must be integer 0 - 9", "Value");
+                }
+                _value = value;
+            }
+        }
+
+        public int Box { get; }
+        
         public bool Solved { get; private set; }
 
         // TODO: Add property to track possible guesses (HashSet)
@@ -18,37 +57,22 @@ namespace Sudoku
 
         public Cell(int row, int col, int value)
         {
-            // Check for invalid values and throw exception.
-            if (row < 0 || row > 8)
-            {
-                throw new System.ArgumentException("Parameter must be integer 0 - 8", "Row");
-            }
-            else if (col < 0 || col > 8)
-            {
-                throw new System.ArgumentException("Parameter must be integer 0 - 8", "Col");
-            }
-            else if (value < 0 || value > 9)
-            {
-                throw new System.ArgumentException("Parameter must be integer 0 - 9", "Value");
-            }
-
-            // Save values 
-            Row = row;
             Col = col;
+            Row = row;
             Value = value;
-
-            // If a value is provided at instantiation the cell is already solved.
-            if (value > 0)
-            {
-                Solved = true;
-            }
 
             // Calculate which 3x3 box the cell is in (listed from 0-8)
             // Where each number below represents a 3x3 group of cells.
             // 0 1 2
             // 3 4 5
             // 6 7 8
-            Box = (Row / 3) + ((Col / 3) * 3);
+            Box = (col / 3) + ((row / 3) * 3);
+
+            // If a value is provided at instantiation the cell is already solved.
+            if (value > 0)
+            {
+                Solved = true;
+            }
         }
 
         public bool UpdateValue()
