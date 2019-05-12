@@ -43,9 +43,52 @@ namespace Sudoku.Tests
         }
 
         [Theory]
+        [InlineData(0, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 3)]
+        [InlineData(3, 4)]
+        [InlineData(4, 5)]
+        [InlineData(5, 6)]
+        [InlineData(6, 7)]
+        [InlineData(7, 8)]
+        [InlineData(8, 9)]
+        [InlineData(9, 0)]
+        public void UpdateValue(int val, int expectedVal)
+        {
+            int row = 0;
+            int col = 0;
+            Cell cell = new Cell(row, col, val);
+
+            cell.UpdateValue();
+            Assert.Equal(cell.Value, expectedVal);
+        }
+
+        [Theory]
+        [InlineData(0, true)]
+        [InlineData(1, true)]
+        [InlineData(2, true)]
+        [InlineData(3, true)]
+        [InlineData(4, true)]
+        [InlineData(5, true)]
+        [InlineData(6, true)]
+        [InlineData(7, true)]
+        [InlineData(8, true)]
+        [InlineData(9, false)]
+        public void UpddateValueBool(int val, bool ret)
+        {
+            int row = 0;
+            int col = 0;
+            Cell cell = new Cell(row, col, val);
+            Assert.Equal(cell.UpdateValue(), ret);
+        }
+    }
+
+    public class CellSolved
+    {
+        [Theory]
         [InlineData(0)]
         // Value of 0 means cell is not solved.
-        public void UnSolved(int val)
+        public void False(int val)
         {
             int row = 0;
             int col = 0;
@@ -64,7 +107,7 @@ namespace Sudoku.Tests
         [InlineData(8)]
         [InlineData(9)]
         // Value of 1-9 means cell is solved.
-        public void Solved(int val)
+        public void True(int val)
         {
             int row = 0;
             int col = 0;
@@ -157,6 +200,7 @@ namespace Sudoku.Tests
         [InlineData(8, 6, 8)]
         [InlineData(8, 7, 8)]
         [InlineData(8, 8, 8)]
+        // This may be excessive but there are only 81 test cases so I decided to test them all
         public void Calculate(int row, int col, int box)
         {
             int val = 0;
