@@ -14,7 +14,6 @@ namespace Sudoku
         private List<Cell> _board;
         private List<Cell> _solution;
         private string _difficulty;
-        private string _status;
         
         // TODO: Add property to contain all cells
         
@@ -31,29 +30,62 @@ namespace Sudoku
             hard
         }
 
+        // Gets board from API of specified difficulty
         public SudokuBoard(Difficulty difficulty)
         {
-            // Make request for raw data.
-            string url = "https://sugoku.herokuapp.com/board?difficulty=";
-            var response = client.GetStringAsync($"{url}{difficulty}");
+            int[,] rawBoard = GetBoardFromApi(difficulty);
+            _board = ConvertFromArray(rawBoard);
 
-            // Deserialize data and save results. 
-            var jsonSchema = new {
-                board = new int[9, 9]
-            };
-            var content = JsonConvert.DeserializeAnonymousType(response.Result, jsonSchema);
-            _board = ConvertFromArray(content.board);
+            RawSolution rawSolution = GetSolutionFromApi(_board);
+            _solution = ConvertFromArray(rawSolution.Solution);
+            _difficulty = rawSolution.Difficulty;
         }
 
         public SudokuBoard(string board)
-        {
-            // Deserialize string and save results. 
-            var content = JsonConvert.DeserializeObject<int[,]>(board);
-            _board = ConvertFromArray(content);
+        { 
+            _board = ConvertFromString(board);
+
+            RawSolution rawSolution = GetSolutionFromApi(_board);
+            _solution = ConvertFromArray(rawSolution.Solution);
+            _difficulty = rawSolution.Difficulty;
+
         }
 
-        private List<Cell> ConvertFromArray(int[,] rawBoard)
+        private int[,] GetBoardFromApi(Difficulty difficulty)
         {
+            // Gets raw data
+            string url = "https://sugoku.herokuapp.com/board?difficulty=";
+            var response = client.GetStringAsync($"{url}{difficulty}");
+
+            // Deserialize data. 
+            var jsonSchema = new { board = new int[9, 9] };
+            var content = JsonConvert.DeserializeAnonymousType(response.Result, jsonSchema);
+            return content.board;
+        }
+
+        public static List<Cell> ConvertFromString(string rawBoard)
+        {
+            try
+            {
+                int[,] board = JsonConvert.DeserializeObject<int[,]>(rawBoard);
+                return ConvertFromArray(board);
+            }
+            catch (Exception ex) when (
+                ex is Newtonsoft.Json.JsonSerializationException ||
+                ex is Newtonsoft.Json.JsonReaderException
+            )
+            {
+                throw new System.ArgumentException("rawBoard not readable as JSON string. rawBoard must be a valid json string of a 9x9 multidimensional array.", "rawBoard");
+            }
+        }
+
+        public static List<Cell> ConvertFromArray(int[,] rawBoard)
+        {
+            if (rawBoard.Rank != 2 || rawBoard.GetLength(0) != 9 || rawBoard.GetLength(1) != 9)
+            {
+                throw new System.ArgumentException("rawBoard must be a 9x9 multidimensional array.", "rawBoard");
+            }
+
             List<Cell> temp = new List<Cell>();
             for (int i = 0; i < rawBoard.GetLength(0); i++)
             {
@@ -66,7 +98,7 @@ namespace Sudoku
             return temp;
         }
 
-        private int[,] ConvertToArray(List<Cell> board)
+        public static int[,] ConvertToArray(List<Cell> board)
         {
             int[,] temp = new int[9,9];
             foreach (Cell cell in board)
@@ -77,28 +109,19 @@ namespace Sudoku
             return temp;
         }
 
-        public void GetSolution()
+        public RawSolution GetSolutionFromApi(List<Cell> board)
         {
             // Make post request with current board to get solution
             string url = "https://sugoku.herokuapp.com/solve";
-            int[,] arrayBoard = ConvertToArray(_board);
+            int[,] arrayBoard = ConvertToArray(board);
             var data = new Dictionary<string, string> { { "board", JsonConvert.SerializeObject(arrayBoard) } };
             var encodedData = new FormUrlEncodedContent(data);
             var content = client.PostAsync(url, encodedData).Result.Content.ReadAsStringAsync().Result;
 
             // Deserialize data and save results. 
-            var jsonSchema = new
-            {
-                difficulty = "",
-                status = "",
-                solution = new int[9, 9]
-            };
-            var rawSolution = JsonConvert.DeserializeAnonymousType(content, jsonSchema);
+            var rawSolution = JsonConvert.DeserializeObject<RawSolution>(content);
 
-            // Save dictionary values to object values
-            _solution = ConvertFromArray(rawSolution.solution);
-            _difficulty = rawSolution.difficulty;
-            _status = rawSolution.status;
+            return rawSolution;
         }
 
 
@@ -123,6 +146,12 @@ namespace Sudoku
 
             return false;
         }
+    }
 
+    public class RawSolution
+    {
+        public string Difficulty;
+        public string Status;
+        public int[,] Solution;
     }
 }
