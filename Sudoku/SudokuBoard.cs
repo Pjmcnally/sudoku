@@ -12,11 +12,9 @@ namespace Sudoku
         private static HttpClient client = new HttpClient();
 
         private List<Cell> _board;
-        private List<Cell> _solution;
-        private string _difficulty;
-        
-        // TODO: Add property to contain all cells
-        
+        private List<Cell> _boardSolved;
+        private RawSolution _rawSolution;
+   
         // TODO: Add property to contain rows
         // TODO: Add property to contain columns
         // TODO: Add property to contain boxes
@@ -35,20 +33,16 @@ namespace Sudoku
         {
             int[,] rawBoard = GetBoardFromApi(difficulty);
             _board = ConvertFromArray(rawBoard);
-
-            RawSolution rawSolution = GetSolutionFromApi(_board);
-            _solution = ConvertFromArray(rawSolution.Solution);
-            _difficulty = rawSolution.Difficulty;
         }
 
         public SudokuBoard(string board)
         { 
             _board = ConvertFromString(board);
+        }
 
-            RawSolution rawSolution = GetSolutionFromApi(_board);
-            _solution = ConvertFromArray(rawSolution.Solution);
-            _difficulty = rawSolution.Difficulty;
-
+        public SudokuBoard(int [,] board)
+        {
+            _board = ConvertFromArray(board);
         }
 
         private int[,] GetBoardFromApi(Difficulty difficulty)
@@ -109,7 +103,14 @@ namespace Sudoku
             return temp;
         }
 
-        public RawSolution GetSolutionFromApi(List<Cell> board)
+        public void GetSolutionFromApi()
+        {
+            _rawSolution = _getSolutionFromApi(_board);
+            _boardSolved = ConvertFromArray(_rawSolution.Solution);
+        }
+
+
+        private RawSolution _getSolutionFromApi(List<Cell> board)
         {
             // Make post request with current board to get solution
             string url = "https://sugoku.herokuapp.com/solve";
