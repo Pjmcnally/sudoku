@@ -12,7 +12,7 @@ namespace Sudoku.Tests
         {
             int col = 0;
             int val = 0;
-            Assert.Throws<System.ArgumentException>(() => new Cell(row, col, val));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => new Cell(row, col, val));
         }
     }
 
@@ -26,7 +26,7 @@ namespace Sudoku.Tests
         {
             int row = 0;
             int val = 0;
-            Assert.Throws<System.ArgumentException>(() => new Cell(row, col, val));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => new Cell(row, col, val));
         }
     }
     public class CellVal
@@ -39,7 +39,7 @@ namespace Sudoku.Tests
         {
             int row = 0;
             int col = 0;
-            Assert.Throws<System.ArgumentException>(() => new Cell(row, col, val));
+            Assert.Throws<System.ArgumentOutOfRangeException>(() => new Cell(row, col, val));
         }
 
         [Theory]
