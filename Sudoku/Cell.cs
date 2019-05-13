@@ -11,7 +11,7 @@ namespace Sudoku
             {
                 if (value < 0 || value > 8)
                 {
-                    throw new System.ArgumentException("Parameter must be integer 0 - 8", "Row");
+                    throw new System.ArgumentOutOfRangeException("Row", "Row must be 0-8");
                 }
                 _row = value;
             }
@@ -25,7 +25,7 @@ namespace Sudoku
             {
                 if (value < 0 || value > 8)
                 {
-                    throw new System.ArgumentException("Parameter must be integer 0 - 8", "Col");
+                    throw new System.ArgumentOutOfRangeException("Col", "Col must be 0-8");
                 }
                 _col = value;
             }
@@ -39,7 +39,7 @@ namespace Sudoku
             {
                 if (value < 0 || value > 9)
                 {
-                    throw new System.ArgumentException("Parameter must be integer 0 - 9", "Value");
+                    throw new System.ArgumentOutOfRangeException("Value", "Value must be integer 0-8");
                 }
                 _value = value;
             }
