@@ -5,9 +5,6 @@ namespace Sudoku.Model
 {
     internal class Board
     {
-        // Create HttpClient - Instantiate as static so only 1 is created and used for the entire application.
-        // private static HttpClient client = new HttpClient();
-
         private List<Cell> _board;
         private List<Cell> _boardSolved;
         private RawSolution _rawSolution;

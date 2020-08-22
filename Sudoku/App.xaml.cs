@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 using System.Windows;
 
 namespace Sudoku
@@ -13,5 +8,7 @@ namespace Sudoku
     /// </summary>
     public partial class App : Application
     {
+        // Create HttpClient - Instantiate as static so only 1 is created and used for the entire application.
+        public static HttpClient client = new HttpClient();
     }
 }
