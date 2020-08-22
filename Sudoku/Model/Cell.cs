@@ -49,7 +49,7 @@ namespace Sudoku.Model
             }
         }
 
-        public int Region { get; }
+        public Board.Region Region { get; }
 
         public bool Solved { get; private set; }
 
@@ -65,13 +65,8 @@ namespace Sudoku.Model
             Row = row;
             Value = value;
 
-            // Calculate which 3x3 box the cell is in (listed from 0-8)
-            // Where each number below represents a 3x3 group of cells.
-            // 0 1 2
-            // 3 4 5
-            // 6 7 8
-            // TODO: Link to human readable Enum
-            Region = (col / 3) + ((row / 3) * 3);
+            // Calculate which region the cell is in
+            Region = (Board.Region)(col / 3) + ((row / 3) * 3);
 
             // If a value is provided at instantiation the cell is already solved.
             if (value > 0)

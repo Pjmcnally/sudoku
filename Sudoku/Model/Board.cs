@@ -22,6 +22,23 @@ namespace Sudoku.Model
             hard
         }
 
+        // Defines regions within the board. Each number below represents a 3x3 group of cells.
+        // 0 1 2
+        // 3 4 5
+        // 6 7 8
+        public enum Region
+        {
+            UpperLeft = 0,
+            UpperMiddle = 1,
+            UpperRight = 2,
+            MiddleLeft = 3,
+            Center = 4,
+            MiddleRight = 5,
+            LowerLeft = 6,
+            LowerMiddle = 7,
+            LowerRight = 8
+        }
+
         // Gets board from API of specified difficulty
         public Board(Difficulty difficulty)
         {
