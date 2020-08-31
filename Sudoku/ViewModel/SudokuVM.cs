@@ -53,7 +53,7 @@ namespace Sudoku.ViewModel
             };
             Board = new Board(boardArray);
 
-            DelayPeriod = 200;
+            DelayPeriod = 0;
         }
 
         public async void SolveBoard()
@@ -69,7 +69,10 @@ namespace Sudoku.ViewModel
                     Cell currentCell = unsolvedCells[i];
                     while (currentCell.UpdateValue() && !(currentCell.IsValid()))
                     {
-                        Thread.Sleep(DelayPeriod);
+                        if (DelayPeriod > 0)
+                        {
+                            Thread.Sleep(DelayPeriod);
+                        }
                     }
 
                     if (currentCell.Value == 0)
