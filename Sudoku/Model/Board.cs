@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text.Json;
 
 namespace Sudoku.Model
 {
-    internal class Board
+    public class Board : INotifyPropertyChanged
     {
-        private List<Cell> _board;
-        private List<Cell> _boardSolved;
-        private RawSolution _rawSolution;
-
         // TODO: Add property to contain rows
         // TODO: Add property to contain columns
         // TODO: Add property to contain boxes
         //     I may not do the 3 items above and may instead use peers inside the cell.
-
-        public enum Difficulty
-        {
-            random,
-            easy,
-            medium,
-            hard
-        }
 
         // Defines regions within the board. Each number below represents a 3x3 group of cells.
         // 0 1 2
@@ -39,52 +28,55 @@ namespace Sudoku.Model
             LowerRight = 8
         }
 
-        // Gets board from API of specified difficulty
-        public Board(Difficulty difficulty)
+        private List<Cell> cells;
+
+        public List<Cell> Cells
         {
-            int[,] rawBoard = GetBoardFromApi(difficulty);
-            _board = ConvertFromArray(rawBoard);
+            get { return cells; }
+            set
+            {
+                cells = value;
+                OnPropertyChanged("Cells");
+            }
+        }
+
+        private List<Cell> solution;
+
+        public List<Cell> Solution
+        {
+            get { return solution; }
+            set
+            {
+                solution = value;
+                OnPropertyChanged("Solution");
+            }
         }
 
         public Board(string board)
         {
-            _board = ConvertFromString(board);
+            Cells = CreateFromString(board);
+            foreach (Cell cell in Cells)
+            {
+                cell.Peers = Cells.FindAll(x => x.Row == cell.Row || x.Col == cell.Col || x.Region == cell.Region);
+            }
         }
 
         public Board(int[,] board)
         {
-            _board = ConvertFromArray(board);
-        }
-
-        private int[,] GetBoardFromApi(Difficulty difficulty)
-        {
-            // Gets raw data
-            string url = "https://sugoku.herokuapp.com/board?difficulty=";
-            var response = client.GetStringAsync($"{url}{difficulty}");
-
-            // Deserialize data.
-            var jsonSchema = new { board = new int[9, 9] };
-            var content = JsonConvert.DeserializeAnonymousType(response.Result, jsonSchema);
-            return content.board;
-        }
-
-        public static List<Cell> ConvertFromString(string rawBoard)
-        {
-            try
+            cells = CreateFromArray(board);
+            foreach (Cell cell in Cells)
             {
-                int[,] board = JsonConvert.DeserializeObject<int[,]>(rawBoard);
-                return ConvertFromArray(board);
-            }
-            catch (Exception ex) when (
-                ex is Newtonsoft.Json.JsonSerializationException ||
-                ex is Newtonsoft.Json.JsonReaderException
-            )
-            {
-                throw new System.ArgumentException("rawBoard not readable as JSON string. rawBoard must be a valid json string of a 9x9 multidimensional array.", "rawBoard");
+                cell.Peers = Cells.FindAll(x => x != cell && (x.Row == cell.Row || x.Col == cell.Col || x.Region == cell.Region));
             }
         }
 
-        public static List<Cell> ConvertFromArray(int[,] rawBoard)
+        public static List<Cell> CreateFromString(string rawBoard)
+        {
+            int[,] board = JsonSerializer.Deserialize<int[,]>(rawBoard);
+            return CreateFromArray(board);
+        }
+
+        public static List<Cell> CreateFromArray(int[,] rawBoard)
         {
             if (rawBoard.Rank != 2 || rawBoard.GetLength(0) != 9 || rawBoard.GetLength(1) != 9)
             {
@@ -101,6 +93,23 @@ namespace Sudoku.Model
             }
 
             return temp;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        // ToDo Move to viewModel
+        /*
+
+        // Gets board from API of specified difficulty
+        public Board(Difficulty difficulty)
+        {
+            int[,] rawBoard = GetBoardFromApi(difficulty);
+            _board = ConvertFromArray(rawBoard);
         }
 
         public static int[,] ConvertToArray(List<Cell> board)
@@ -120,48 +129,13 @@ namespace Sudoku.Model
             _boardSolved = ConvertFromArray(_rawSolution.Solution);
         }
 
-        private RawSolution _getSolutionFromApi(List<Cell> board)
+        public class RawSolution
         {
-            // Make post request with current board to get solution
-            string url = "https://sugoku.herokuapp.com/solve";
-            int[,] arrayBoard = ConvertToArray(board);
-            var data = new Dictionary<string, string> { { "board", JsonConvert.SerializeObject(arrayBoard) } };
-            var encodedData = new FormUrlEncodedContent(data);
-            var content = client.PostAsync(url, encodedData).Result.Content.ReadAsStringAsync().Result;
-
-            // Deserialize data and save results.
-            var rawSolution = JsonConvert.DeserializeObject<RawSolution>(content);
-
-            return rawSolution;
+            public string Difficulty;
+            public string Status;
+            public int[,] Solution;
         }
 
-        public bool BacktrackSolve()
-        {
-            // Method to run backtrack solve algorithm on the board.
-
-            List<Cell> unsolved = new List<Cell>();
-            // list = list of unsolved cells
-            // i = 0
-            // while (i > 0 && i < length of unsolved list):
-            //  if (list[i] can update guess && new guess creates a valid board)
-            //    i++
-            //  else
-            //    reset current cell
-            //    i--
-            //
-            //  if (i = length of unsolved list)
-            //    return true  // board is solved
-            //  else
-            //    return false  // board is unsolvable
-
-            return false;
-        }
-    }
-
-    public class RawSolution
-    {
-        public string Difficulty;
-        public string Status;
-        public int[,] Solution;
+        */
     }
 }
