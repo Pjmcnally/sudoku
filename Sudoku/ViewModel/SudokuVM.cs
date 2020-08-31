@@ -2,6 +2,7 @@
 using Sudoku.ViewModel.Commands;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,18 @@ namespace Sudoku.ViewModel
             {
                 board = value;
                 OnPropertyChanged("Board");
+            }
+        }
+
+        private int delayPeriod;
+
+        public int DelayPeriod
+        {
+            get { return delayPeriod; }
+            set
+            {
+                delayPeriod = value;
+                OnPropertyChanged("DelayPeriod");
             }
         }
 
@@ -39,6 +52,8 @@ namespace Sudoku.ViewModel
                 { 0, 4, 2, 6, 0, 7, 5, 0, 0 }
             };
             Board = new Board(boardArray);
+
+            DelayPeriod = 200;
         }
 
         public async void SolveBoard()
@@ -54,7 +69,7 @@ namespace Sudoku.ViewModel
                     Cell currentCell = unsolvedCells[i];
                     while (currentCell.UpdateValue() && !(currentCell.IsValid()))
                     {
-                        //Thread.Sleep(50);
+                        Thread.Sleep(DelayPeriod);
                     }
 
                     if (currentCell.Value == 0)
