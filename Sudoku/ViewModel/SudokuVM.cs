@@ -47,6 +47,14 @@ namespace Sudoku.ViewModel
             }
         }
 
+        private Random random;
+
+        public Random Random
+        {
+            get { return random; }
+            set { random = value; }
+        }
+
         public LoadCommand LoadCommand { get; set; }
         public SolveCommand SolveCommand { get; set; }
 
@@ -54,26 +62,82 @@ namespace Sudoku.ViewModel
         {
             SolveCommand = new SolveCommand(this);
             LoadCommand = new LoadCommand(this);
-            LoadBoard();
+
+            Random = new Random();
+            DelayPeriod = 0;
+            Board = new Board(GetEmptyBoard());
         }
 
         public void LoadBoard()
         {
-            int[,] boardArray = new int[,] {
-                { 0, 0, 0, 0, 0, 0, 0, 0, 2 },
-                { 0, 0, 0, 4, 0, 0, 7, 0, 9 },
-                { 4, 0, 0, 0, 7, 0, 1, 3, 5 },
-                { 0, 1, 4, 0, 0, 5, 0, 0, 0 },
-                { 0, 5, 8, 0, 0, 1, 2, 0, 4 },
-                { 7, 0, 0, 0, 0, 0, 0, 5, 1 },
-                { 6, 3, 0, 5, 4, 0, 0, 0, 8 },
-                { 0, 7, 0, 9, 1, 0, 0, 0, 6 },
-                { 0, 4, 2, 6, 0, 7, 5, 0, 0 }
-            };
-            Board = new Board(boardArray);
-
-            DelayPeriod = 0;
+            Board = new Board(GetHardBoard());
             StatusMessage = "Board Loaded";
+        }
+
+        public int[,] GetEmptyBoard()
+        {
+            return new int[,] {
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+            };
+        }
+
+        public int[,] GetHardBoard()
+        {
+            List<int[,]> boardList = new List<int[,]> {
+                new int[,] {
+                    { 8, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 3, 6, 0, 0, 0, 0, 0 },
+                    { 0, 7, 0, 0, 9, 0, 2, 0, 0 },
+                    { 0, 5, 0, 0, 0, 7, 0, 0, 0 },
+                    { 0, 0, 0, 0, 4, 5, 7, 0, 0 },
+                    { 0, 0, 0, 1, 0, 0, 0, 3, 0 },
+                    { 0, 0, 1, 0, 0, 0, 0, 6, 8 },
+                    { 0, 0, 8, 5, 0, 0, 0, 1, 0 },
+                    { 0, 9, 0, 0, 0, 0, 4, 0, 0 }
+                },
+                new int[,]
+                {
+                    { 3, 0, 5, 0, 7, 1, 0, 0, 9 },
+                    { 0, 0, 0, 3, 4, 0, 0, 0, 0 },
+                    { 0, 9, 0, 2, 0, 0, 0, 0, 0 },
+                    { 0, 3, 0, 0, 0, 4, 0, 0, 0 },
+                    { 0, 6, 0, 0, 0, 0, 0, 0, 7 },
+                    { 0, 0, 0, 0, 0, 2, 8, 5, 0 },
+                    { 0, 0, 0, 0, 0, 0, 0, 8, 0 },
+                    { 0, 5, 4, 0, 0, 0, 9, 0, 1 },
+                    { 0, 0, 7, 0, 0, 0, 4, 0, 0 }
+                }
+            };
+
+            return boardList[Random.Next(boardList.Count)];
+        }
+
+        public int[,] GetVeryHardBoard()
+        {
+            List<int[,]> boardList = new List<int[,]> {
+                new int[,]
+                {
+                    { 0, 0, 0, 8, 0, 1, 0, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 4, 3, 0 },
+                    { 5, 0, 0, 0, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 0, 7, 0, 8, 0, 0 },
+                    { 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+                    { 0, 2, 0, 0, 3, 0, 0, 0, 0 },
+                    { 6, 0, 0, 0, 0, 0, 0, 7, 5 },
+                    { 0, 0, 3, 4, 0, 0, 0, 0, 0 },
+                    { 0, 0, 0, 2, 0, 0, 6, 0, 0 }
+                }
+            };
+
+            return boardList[Random.Next(boardList.Count)];
         }
 
         public async void SolveBoard()
