@@ -1,10 +1,11 @@
 ﻿using Sudoku.Model;
 using Sudoku.ViewModel.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Sudoku.ViewModel
 {
@@ -34,6 +35,18 @@ namespace Sudoku.ViewModel
             }
         }
 
+        private string statusMessage;
+
+        public string StatusMessage
+        {
+            get { return statusMessage; }
+            set
+            {
+                statusMessage = value;
+                OnPropertyChanged("StatusMessage");
+            }
+        }
+
         public SolveCommand SolveCommand { get; set; }
 
         public SudokuVM()
@@ -54,6 +67,7 @@ namespace Sudoku.ViewModel
             Board = new Board(boardArray);
 
             DelayPeriod = 0;
+            StatusMessage = "Board Loaded";
         }
 
         public async void SolveBoard()
@@ -61,6 +75,10 @@ namespace Sudoku.ViewModel
             await Task.Run(() =>
             {
                 // Method to run backtrack solve algorithm on the board.
+                StatusMessage = "Solving Board";
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 List<Cell> unsolvedCells = Board.Cells.FindAll(x => x.Solved == false);
 
                 int i = 0;
@@ -85,14 +103,17 @@ namespace Sudoku.ViewModel
                     }
                 }
 
+                stopwatch.Stop();
+                TimeSpan ts = stopwatch.Elapsed;
+                string durationString = $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
                 if (i == unsolvedCells.Count)
                 {
-                    MessageBox.Show("Board has been solved");
+                    StatusMessage = $"Board has been solved\r\n{durationString}";
                     return true;  // board is solved
                 }
                 else
                 {
-                    MessageBox.Show("Board cannot be solved");
+                    StatusMessage = "Board cannot be solved\r\n{durationString}";
                     return false;  // board is unsolvable
                 }
             });
