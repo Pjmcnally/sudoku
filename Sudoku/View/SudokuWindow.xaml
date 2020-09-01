@@ -21,7 +21,7 @@
                     VerticalAlignment="Center">
             <Button Content="Load Board"
                     Margin="10"
-                    Command="{Binding SolveCommand}" />
+                    Command="{Binding LoadCommand}" />
             <Button Content="Solve Board"
                     Margin="10 10 10 50"
                     Command="{Binding SolveCommand}" />

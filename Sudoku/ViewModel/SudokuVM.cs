@@ -47,12 +47,18 @@ namespace Sudoku.ViewModel
             }
         }
 
+        public LoadCommand LoadCommand { get; set; }
         public SolveCommand SolveCommand { get; set; }
 
         public SudokuVM()
         {
             SolveCommand = new SolveCommand(this);
+            LoadCommand = new LoadCommand(this);
+            LoadBoard();
+        }
 
+        public void LoadBoard()
+        {
             int[,] boardArray = new int[,] {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 2 },
                 { 0, 0, 0, 4, 0, 0, 7, 0, 9 },
