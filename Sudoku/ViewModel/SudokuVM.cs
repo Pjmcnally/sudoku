@@ -39,10 +39,7 @@ namespace Sudoku.ViewModel
 
         public int DelayPeriodTickCount
         {
-            get
-            {
-                return DelayPeriodList.Count - 1;
-            }
+            get { return DelayPeriodList.Count - 1; }
         }
 
         private string statusMessage;
