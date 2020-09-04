@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sudoku.View"
         xmlns:vm="clr-namespace:Sudoku.ViewModel"
+        xmlns:converter="clr-namespace:Sudoku.View.Converter"
         mc:Ignorable="d"
         Title="Sudoku Solver"
         Height="450"
         Width="600">
     <Window.Resources>
         <vm:SudokuVM x:Key="vm" />
+        <converter:SolveDelayConverter x:Key="SolveDelayConverter" />
     </Window.Resources>
     <Grid DataContext="{StaticResource vm}">
         <Grid.ColumnDefinitions>
@@ -27,11 +29,12 @@
                     Command="{Binding SolveCommand}" />
             <TextBlock Text="{Binding DelayPeriod, StringFormat='Solve Delay: {0}'}"
                        Margin="10 10 10 0" />
-            <Slider Maximum="1000"
-                    TickPlacement="BottomRight"
-                    Ticks="0, 5, 10, 25, 50, 100, 200, 500, 1000"
+            <Slider Minimum="0"
+                    Maximum="{Binding DelayPeriodTickCount}"
+                    TickFrequency="1"
                     IsSnapToTickEnabled="True"
-                    Value="{Binding DelayPeriod}"
+                    TickPlacement="BottomRight"
+                    Value="{Binding DelayPeriod, Converter={StaticResource SolveDelayConverter}, ConverterParameter={x:Static vm:SudokuVM.DelayPeriodList}}"
                     Margin="10 5 10 50" />
             <TextBlock Text="CurrentStatus:"
                        Margin="10 5 10 0" />

@@ -11,6 +11,8 @@ namespace Sudoku.ViewModel
 {
     public class SudokuVM : INotifyPropertyChanged
     {
+        public static List<int> DelayPeriodList = new List<int>() { 0, 5, 10, 25, 50, 100, 250, 500, 1000 };
+
         private Board board;
 
         public Board Board
@@ -33,6 +35,11 @@ namespace Sudoku.ViewModel
                 delayPeriod = value;
                 OnPropertyChanged("DelayPeriod");
             }
+        }
+
+        public int DelayPeriodTickCount
+        {
+            get { return DelayPeriodList.Count - 1; }
         }
 
         private string statusMessage;
