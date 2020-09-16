@@ -55,15 +55,17 @@ namespace Sudoku.Model
         public Board(string board)
         {
             Cells = CreateFromString(board);
-            foreach (Cell cell in Cells)
-            {
-                cell.Peers = Cells.FindAll(x => x.Row == cell.Row || x.Col == cell.Col || x.Region == cell.Region);
-            }
+            FindAllPeers();
         }
 
         public Board(int[,] board)
         {
-            cells = CreateFromArray(board);
+            Cells = CreateFromArray(board);
+            FindAllPeers();
+        }
+
+        public void FindAllPeers()
+        {
             foreach (Cell cell in Cells)
             {
                 cell.Peers = Cells.FindAll(x => x != cell && (x.Row == cell.Row || x.Col == cell.Col || x.Region == cell.Region));
