@@ -1,5 +1,6 @@
 ﻿using Sudoku.Model;
 using Sudoku.ViewModel.Commands;
+using Sudoku.ViewModel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -77,74 +78,43 @@ namespace Sudoku.ViewModel
 
         public void LoadBoard()
         {
-            Board = new Board(GetHardBoard());
+            Board = new Board(GetEmptyBoard());
             StatusMessage = "Board Loaded";
         }
 
         public int[,] GetEmptyBoard()
         {
             return new int[,] {
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
         }
 
         public int[,] GetHardBoard()
         {
-            List<int[,]> boardList = new List<int[,]> {
-                new int[,] {
-                    { 8, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 3, 6, 0, 0, 0, 0, 0 },
-                    { 0, 7, 0, 0, 9, 0, 2, 0, 0 },
-                    { 0, 5, 0, 0, 0, 7, 0, 0, 0 },
-                    { 0, 0, 0, 0, 4, 5, 7, 0, 0 },
-                    { 0, 0, 0, 1, 0, 0, 0, 3, 0 },
-                    { 0, 0, 1, 0, 0, 0, 0, 6, 8 },
-                    { 0, 0, 8, 5, 0, 0, 0, 1, 0 },
-                    { 0, 9, 0, 0, 0, 0, 4, 0, 0 }
-                },
-                new int[,]
-                {
-                    { 3, 0, 5, 0, 7, 1, 0, 0, 9 },
-                    { 0, 0, 0, 3, 4, 0, 0, 0, 0 },
-                    { 0, 9, 0, 2, 0, 0, 0, 0, 0 },
-                    { 0, 3, 0, 0, 0, 4, 0, 0, 0 },
-                    { 0, 6, 0, 0, 0, 0, 0, 0, 7 },
-                    { 0, 0, 0, 0, 0, 2, 8, 5, 0 },
-                    { 0, 0, 0, 0, 0, 0, 0, 8, 0 },
-                    { 0, 5, 4, 0, 0, 0, 9, 0, 1 },
-                    { 0, 0, 7, 0, 0, 0, 4, 0, 0 }
-                }
-            };
-
-            return boardList[Random.Next(boardList.Count)];
+            return SugokuHelper.GetBoard(SugokuHelper.Difficulty.hard);
         }
 
         public int[,] GetVeryHardBoard()
         {
-            List<int[,]> boardList = new List<int[,]> {
-                new int[,]
-                {
-                    { 0, 0, 0, 8, 0, 1, 0, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 4, 3, 0 },
-                    { 5, 0, 0, 0, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 0, 7, 0, 8, 0, 0 },
-                    { 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-                    { 0, 2, 0, 0, 3, 0, 0, 0, 0 },
-                    { 6, 0, 0, 0, 0, 0, 0, 7, 5 },
-                    { 0, 0, 3, 4, 0, 0, 0, 0, 0 },
-                    { 0, 0, 0, 2, 0, 0, 6, 0, 0 }
-                }
+            return new int[,]  {
+                { 0, 0, 0, 8, 0, 1, 0, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 4, 3, 0 },
+                { 5, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 0, 7, 0, 8, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 1, 0, 0 },
+                { 0, 2, 0, 0, 3, 0, 0, 0, 0 },
+                { 6, 0, 0, 0, 0, 0, 0, 7, 5 },
+                { 0, 0, 3, 4, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 2, 0, 0, 6, 0, 0 }
             };
-
-            return boardList[Random.Next(boardList.Count)];
         }
 
         public async void SolveBoard()
@@ -153,6 +123,7 @@ namespace Sudoku.ViewModel
             {
                 // Method to run backtrack solve algorithm on the board.
                 StatusMessage = "Solving Board";
+                int totalGuesses = 0;
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
@@ -164,6 +135,7 @@ namespace Sudoku.ViewModel
                     Cell currentCell = unsolvedCells[i];
                     while (currentCell.UpdateValue() && !(currentCell.IsValid()))
                     {
+                        totalGuesses += 1;
                         if (DelayPeriod > 0)
                         {
                             Thread.Sleep(DelayPeriod);
@@ -185,12 +157,12 @@ namespace Sudoku.ViewModel
                 string durationString = $"{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
                 if (i == unsolvedCells.Count)
                 {
-                    StatusMessage = $"Board has been solved\r\n{durationString}";
+                    StatusMessage = $"Board has been solved\r\n{durationString}\r\n{totalGuesses}";
                     return true;  // board is solved
                 }
                 else
                 {
-                    StatusMessage = "Board cannot be solved\r\n{durationString}";
+                    StatusMessage = $"Board cannot be solved\r\n{durationString}\r\n{totalGuesses}";
                     return false;  // board is unsolvable
                 }
             });
