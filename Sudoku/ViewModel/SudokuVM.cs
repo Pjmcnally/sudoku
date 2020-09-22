@@ -78,7 +78,7 @@ namespace Sudoku.ViewModel
 
         public void LoadBoard()
         {
-            Board = new Board(GetEmptyBoard());
+            Board = new Board(GetSugokuBoard(SugokuHelper.Difficulty.hard));
             StatusMessage = "Board Loaded";
         }
 
@@ -97,9 +97,9 @@ namespace Sudoku.ViewModel
             };
         }
 
-        public int[,] GetHardBoard()
+        public int[,] GetSugokuBoard(SugokuHelper.Difficulty difficulty)
         {
-            return SugokuHelper.GetBoard(SugokuHelper.Difficulty.hard);
+            return SugokuHelper.GetBoard(difficulty);
         }
 
         public int[,] GetVeryHardBoard()
